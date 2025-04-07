@@ -23,14 +23,16 @@ Note: Git 1.8.5 or newer is recommended for best performance.
 
 Run:
 
-    make
-    make install
+    pip install conan 
+    conan install . --output-folder . -s build_type=Debug -s '&:build_type=Debug' --build=missing
+    cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
+    cmake --build build
 
 To install to a specific location:
 
-    make install PREFIX=/usr/local
+    TODO
 
-Or, just copy the git-crypt binary to wherever is most convenient for you.
+Or, just copy the build/git-crypt binary to wherever is most convenient for you.
 
 
 ### Building The Man Page

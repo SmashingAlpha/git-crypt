@@ -75,13 +75,14 @@ void Aes_ecb_encryptor::encrypt(const unsigned char* plain, unsigned char* ciphe
 }
 
 struct Hmac_sha1_state::Hmac_impl {
-	HMAC_CTX ctx;
+	HMAC_CTX *ctx;
 };
 
 Hmac_sha1_state::Hmac_sha1_state (const unsigned char* key, size_t key_len)
 : impl(new Hmac_impl)
 {
-	HMAC_Init(&(impl->ctx), key, key_len, EVP_sha1());
+	impl->ctx = HMAC_CTX_new();
+	HMAC_Init(impl->ctx, key, key_len, EVP_sha1());
 }
 
 Hmac_sha1_state::~Hmac_sha1_state ()
@@ -89,18 +90,18 @@ Hmac_sha1_state::~Hmac_sha1_state ()
 	// Note: Explicit destructor necessary because class contains an unique_ptr
 	// which contains an incomplete type when the unique_ptr is declared.
 
-	HMAC_cleanup(&(impl->ctx));
+	HMAC_CTX_free(impl->ctx);//HMAC_cleanup(&(impl->ctx));
 }
 
 void Hmac_sha1_state::add (const unsigned char* buffer, size_t buffer_len)
 {
-	HMAC_Update(&(impl->ctx), buffer, buffer_len);
+	HMAC_Update(impl->ctx, buffer, buffer_len);
 }
 
 void Hmac_sha1_state::get (unsigned char* digest)
 {
 	unsigned int len;
-	HMAC_Final(&(impl->ctx), digest, &len);
+	HMAC_Final(impl->ctx, digest, &len);
 }
 
 
