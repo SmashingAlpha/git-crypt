@@ -24,7 +24,9 @@ Note: Git 1.8.5 or newer is recommended for best performance.
 Run:
 
     pip install conan 
+    # conan profile detect # on ubuntu 
     conan install . --output-folder . -s build_type=Debug -s '&:build_type=Debug' --build=missing
+    # sudo apt install g++ # on ubuntu if missing 
     cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=Debug/generators/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug
     cmake --build build
 
